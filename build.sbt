@@ -6,3 +6,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "PTRLab4"
   )
+
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.9.2"
