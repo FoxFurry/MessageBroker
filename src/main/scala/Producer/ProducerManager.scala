@@ -1,0 +1,5 @@
+package Producer
+
+class ProducerManager {
+
+}

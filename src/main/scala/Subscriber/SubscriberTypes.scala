@@ -1,0 +1,5 @@
+package Subscriber
+
+object SubscriberType {
+
+}
