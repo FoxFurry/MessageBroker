@@ -7,4 +7,8 @@ lazy val root = (project in file("."))
     name := "PTRLab4"
   )
 
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.9.2"
+libraryDependencies ++= Seq(
+    "com.typesafe.play" %% "play-json" % "2.9.2",
+    "com.typesafe.akka" %% "akka-actor-typed" % "2.6.19",
+  "ch.qos.logback" % "logback-classic" % "1.2.11"
+  )
