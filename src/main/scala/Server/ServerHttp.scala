@@ -1,5 +1,5 @@
 package Server
 
-class HttpServer {
+class ServerHttp {
 
 }
