@@ -1,8 +1,8 @@
-package API
+package Api
 
 import Message.Message
 import Subscriber.Subscriber
 
-trait API {
+trait Api {
   def send(msg: Message, receiver: Subscriber): Unit
 }

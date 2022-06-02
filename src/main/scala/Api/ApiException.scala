@@ -1,3 +1,3 @@
-package API
+package Api
 
-final case class APIException(private val message: String = "", private val cause: Throwable = None.orNull) extends Exception(message, cause)
+final case class ApiException(private val message: String = "", private val cause: Throwable = None.orNull) extends Exception(message, cause)

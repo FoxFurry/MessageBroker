@@ -1,11 +1,11 @@
-package API
+package Api
 
 import Message.Message
 import Subscriber.Subscriber
 import sttp.client3._
 import sttp.model.StatusCode
 
-class HttpAPI extends API {
+class ApiHttp extends Api {
   private val backend = HttpClientSyncBackend()
 
   def send(msg: Message, receiver: Subscriber): Unit = {
@@ -13,7 +13,7 @@ class HttpAPI extends API {
     val response = request.send(backend)
 
     if (response.code != StatusCode.Ok) {
-      throw APIException(s"${response.statusText}:${response.body}")
+      throw ApiException(s"${response.statusText}:${response.body}")
     }
   }
 }

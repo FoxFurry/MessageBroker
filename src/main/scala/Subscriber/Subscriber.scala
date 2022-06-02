@@ -4,9 +4,9 @@ import Message.Message
 
 import scala.util.Try
 
-class Subscriber(_address: String, _api: API.API){
+class Subscriber(_address: String, _api: Api.Api){
   val address: String = _address
-  val api: API.API = _api
+  val api: Api.Api = _api
 
   def send(msg: Message): Try[Unit] = Try(
     sendNonWrapped(msg)
@@ -16,7 +16,7 @@ class Subscriber(_address: String, _api: API.API){
     try {
       api.send(msg, this)
     } catch {
-      case e: API.APIException => throw SubscriberSendException(e.toString)
+      case e: Api.ApiException => throw SubscriberSendException(e.toString)
     }
   }
 }

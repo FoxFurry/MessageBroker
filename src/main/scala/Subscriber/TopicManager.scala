@@ -14,7 +14,7 @@ object TopicManager {
   case object Notify extends Action
 
   var topicSubscribers: Array[Subscriber] = Array()
-  var topicMessage: mutable.Queue[Message] = mutable.Queue()
+  val topicMessage: mutable.Queue[Message] = mutable.Queue()
 
   def apply(): Behavior[Action] =
     Behaviors.receive{ (_, message) =>
