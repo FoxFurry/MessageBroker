@@ -6,24 +6,19 @@ import scala.util.Try
 
 final case class SubscriberSendException(private val message: String = "", private val cause: Throwable = None.orNull) extends Exception(message, cause)
 
-class Subscriber(_address: String, _subType: SubscriberTypes.SubscriberType){
+class Subscriber(_address: String, _api: API.API){
   val address: String = _address
-  val subType: SubscriberTypes.SubscriberType = _subType
+  val api: API.API = _api
 
   def send(msg: Message): Try[Unit] = Try(
     sendNonWrapped(msg)
   )
 
   private def sendNonWrapped(msg: Message): Unit = {
-    subType match {
-      case SubscriberTypes.HTTP =>
-        throw SubscriberSendException(s"HTTP not implemented")
-      case SubscriberTypes.MQTT =>
-        throw SubscriberSendException(s"MQTT not implemented")
-      case SubscriberTypes.XMPP =>
-        throw SubscriberSendException(s"XMPP not implemented")
-      case _ =>
-        throw SubscriberSendException(s"Unknown subscriber type: $subType")
+    try {
+      api.send(msg, this)
+    } catch {
+      case e: API.APIException => throw SubscriberSendException(e.toString)
     }
   }
 }

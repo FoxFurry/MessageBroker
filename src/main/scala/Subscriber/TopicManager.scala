@@ -19,19 +19,22 @@ object TopicManager {
   def apply(): Behavior[Action] =
     Behaviors.receive{ (_, message) =>
       message match {
-        case AddSub(sub: Subscriber) => {
-          println(s"Received new ${sub.subType} sub ${sub.address}")
-          topicSubscribers = topicSubscribers :+ sub             // Add subscriber to subscriber array
+
+        case AddSub(sub: Subscriber) =>
+          println(s"Received new sub ${sub.address}")
+          topicSubscribers = topicSubscribers :+ sub  // Add subscriber to subscriber array
+
           Behaviors.same
-        }
-        case AddMessage(msg: Message) => {
+
+        case AddMessage(msg: Message) =>
           println(s"Received new message ${msg.data}")
-          topicMessage.enqueue(msg)           // Add message to the queue
+          topicMessage.enqueue(msg)                   // Add message to the queue
+
           Behaviors.same
-        }
-        case Notify => {
-          if (!topicSubscribers.isEmpty) {    // If we have at least one subscriber
-            val msg = topicMessage.dequeue()  // Pop the first message
+
+        case Notify =>
+          if (!topicSubscribers.isEmpty) {            // If we have at least one subscriber
+            val msg = topicMessage.dequeue()          // Pop the first message
 
             topicSubscribers.foreach(sub => sub.send(msg) match { // Send to each subscriber
               case Success(_) => println(s"Successfully sent to ${sub.address}")
@@ -40,7 +43,6 @@ object TopicManager {
           }
 
           Behaviors.same
-        }
       }
     }
 }
