@@ -19,6 +19,7 @@ object TopicProxy {
           } else {                                                            // Else if manager is not defined for this topic
             val newManager = system.systemActorOf(TopicManager(), sub.topic) // Create a new manager for this topic
             println(s"Created ${sub.topic} manager and new subscriber")
+            topics(sub.topic) = newManager
             newManager ! AddSub(sub)                                        // Add subscriber to the new topic
           }
 
@@ -31,6 +32,7 @@ object TopicProxy {
           } else {                                                            // Else if manager is not defined for this topic
             val newManager = system.systemActorOf(TopicManager(), msg.topic) // Create a new manager for this topic
             println(s"Created ${msg.topic} manager and sending message")
+            topics(msg.topic) = newManager
             newManager ! AddMessage(msg)                                    // Add message to the new topic
           }
 
