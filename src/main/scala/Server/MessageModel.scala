@@ -1,6 +1,6 @@
 package Server
 
-case class Message(
+case class MessageModel(
   var topic:String,
   var data:String
 )

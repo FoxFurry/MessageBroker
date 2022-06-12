@@ -1,6 +1,6 @@
 package Server
 
-case class Subscribe(
+case class SubscribeModel(
   var topic:String,
   var address:String
 )

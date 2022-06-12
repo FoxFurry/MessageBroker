@@ -7,16 +7,10 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 
 object TopicManager {
-  sealed trait Action
-
-  case class AddSub(sub: Subscriber) extends Action
-  case class AddMessage(msg: Message) extends Action
-  case object Notify extends Action
-
   var topicSubscribers: Array[Subscriber] = Array()
   val topicMessage: mutable.Queue[Message] = mutable.Queue()
 
-  def apply(): Behavior[Action] =
+  def apply(): Behavior[TopicAction] =
     Behaviors.receive{ (_, message) =>
       message match {
 
