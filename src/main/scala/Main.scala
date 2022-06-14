@@ -4,9 +4,9 @@ import akka.actor.typed.ActorSystem
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val rootGuardian: ActorSystem[ProxyAction] = ActorSystem(TopicProxy(), "proxy")
+    val proxyGuardian: ActorSystem[ProxyAction] = ActorSystem(TopicProxy(), "proxy")
 
-    val httpServer = new ServerHttp()(rootGuardian)
+    val httpServer = new ServerHttp()(proxyGuardian)
     httpServer.Start()
   }
 }
