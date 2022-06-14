@@ -9,6 +9,7 @@ import akka.actor.typed.{ActorRef, ActorSystem}
 object TopicProxy {
   var system: ActorSystem[TopicAction] = ActorSystem(TopicManager(), "Topics")
   val topics: scala.collection.mutable.Map[String, ActorRef[TopicAction]] = scala.collection.mutable.Map[String, ActorRef[TopicAction]]()
+
   def apply(): Behavior[ProxyAction] =
     Behaviors.receive{ (_, message) =>
       message match {
