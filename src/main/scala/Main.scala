@@ -1,6 +1,5 @@
-
 import Server.ServerHttp
-import TopicProxy.{NewMessage, NewSub, ProxyAction, TopicProxy}
+import TopicProxy.{ProxyAction, TopicProxy}
 import akka.actor.typed.ActorSystem
 
 object Main {
