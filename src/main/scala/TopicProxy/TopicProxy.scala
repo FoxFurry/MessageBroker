@@ -27,15 +27,14 @@ object TopicProxy {
           Behaviors.same
 
         case NewMessage(msg: Message) =>
-          if (topics.isDefinedAt(msg.topic)) {                                   // If manager is defined for this topic
-            println(s"Sending message to ${msg.topic} manager")
-            topics(msg.topic) ! AddMessage(msg)                                // Add message to this topic
-          } else {                                                            // Else if manager is not defined for this topic
-            val newManager = system.systemActorOf(TopicManager(), msg.topic) // Create a new manager for this topic
+          if (!topics.isDefinedAt(msg.topic)) { // If manager is not defined for this topic
             println(s"Created ${msg.topic} manager and sending message")
-            topics(msg.topic) = newManager
-            newManager ! AddMessage(msg)                                    // Add message to the new topic
+
+            topics(msg.topic) = system.systemActorOf(TopicManager(), msg.topic) // Create a new manager for this topic
           }
+
+          println(s"Sending message to ${msg.topic} manager")
+          topics(msg.topic) ! AddMessage(msg)                                    // Add message to the new topic
 
           Behaviors.same
 
