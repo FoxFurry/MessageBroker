@@ -4,7 +4,7 @@ import Message.Message
 import Subscriber.{AddMessage, AddSub, Notify, Subscriber, TopicAction, TopicManager}
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
-import akka.actor.typed.{ActorRef, ActorSystem}
+import akka.actor.typed.ActorRef
 
 object TopicProxy {
   val topics: scala.collection.mutable.Map[String, ActorRef[TopicAction]] = scala.collection.mutable.Map[String, ActorRef[TopicAction]]()

@@ -6,10 +6,12 @@ import scala.util.{Failure, Success, Try}
 
 class Subscriber(_address: String, _topic: String, _api: Api.Api){
   private var cursor: Int = 0
-  private val address: String = _address
   private val api: Api.Api = _api
 
+  val address: String = _address
   val topic: String = _topic
+
+  def getCursor: Int = { cursor }
 
   def send(msg: Message): Unit =
     sendNonWrapped(msg) match {
@@ -22,13 +24,11 @@ class Subscriber(_address: String, _topic: String, _api: Api.Api){
 
     }
 
-  def getCursor: Int = { cursor }
-
   private def sendNonWrapped(msg: Message): Try[Unit] = Try {
-    try {
-      api.send(msg, this)
-    } catch {
-      case e: Api.ApiException => throw SubscriberSendException(e.toString)
-    }
+//    try {
+//      api.send(msg, this)
+//    } catch {
+//      case e: Api.ApiException => throw SubscriberSendException(e.toString)
+//    }
   }
 }

@@ -21,7 +21,7 @@ object TopicManager {
       message match {
 
         case AddSub(sub: Subscriber) =>
-          context.log.info(s"[$topic] Received new sub: addr: ${sub.address} topic: ${sub.topic}")
+          context.log.info(s"[$topic] Received new sub: ${sub.address}, ${sub.topic}")
           subscribers = subscribers :+ sub  // Add subscriber to subscriber array
 
           this

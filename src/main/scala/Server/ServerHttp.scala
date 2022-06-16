@@ -9,6 +9,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 import Subscriber.Subscriber
+import org.slf4j.Logger
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
@@ -17,7 +18,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val MessageFormat: RootJsonFormat[MessageModel] = jsonFormat2(MessageModel)
 }
 
-class ServerHttp()(implicit system: ActorSystem[ProxyAction]) extends Server with Directives with JsonSupport {
+class ServerHttp(logger: Logger)(implicit system: ActorSystem[ProxyAction]) extends Server with Directives with JsonSupport {
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
   var serverInstance: Future[Http.ServerBinding] = null
   def Start(): Unit = {
@@ -27,7 +28,7 @@ class ServerHttp()(implicit system: ActorSystem[ProxyAction]) extends Server wit
         path("subscribe") {
           post {
             entity(as[SubscribeModel]) { sub =>
-              println(s"Received new subscriber for ${sub.topic}")
+              logger.info(s"Received new subscriber for ${sub.topic}")
 
               system ! NewSub(new Subscriber( _address = sub.address,
                 _topic = sub.topic,
@@ -41,7 +42,7 @@ class ServerHttp()(implicit system: ActorSystem[ProxyAction]) extends Server wit
         path("message") {
         post {
           entity(as[MessageModel]) { msg =>
-            println(s"Received new message for ${msg.topic}")
+            logger.info(s"Received new message for ${msg.topic}")
 
             system ! NewMessage(new Message(topic = msg.topic, data = msg.data))
 
