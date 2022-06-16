@@ -23,21 +23,22 @@ class ServerHttp()(implicit system: ActorSystem[ProxyAction]) extends Server wit
   def Start(): Unit = {
 
     val route = {
-      path("subscribe") {
-        post {
-          entity(as[SubscribeModel]) { sub =>
-            println(s"Received new subscriber for ${sub.topic}")
+      concat(
+        path("subscribe") {
+          post {
+            entity(as[SubscribeModel]) { sub =>
+              println(s"Received new subscriber for ${sub.topic}")
 
-            system ! NewSub(new Subscriber( _address = sub.address,
-                                            _topic = sub.topic,
-                                             _api = new ApiHttp))
+              system ! NewSub(new Subscriber( _address = sub.address,
+                _topic = sub.topic,
+                _api = new ApiHttp))
 
-            complete(s"Received new subscriber for topic ${sub.topic}")
+              complete(s"Received new subscriber for topic ${sub.topic}")
+            }
           }
-        }
-      }
+        },
 
-      path("message") {
+        path("message") {
         post {
           entity(as[MessageModel]) { msg =>
             println(s"Received new message for ${msg.topic}")
@@ -48,7 +49,8 @@ class ServerHttp()(implicit system: ActorSystem[ProxyAction]) extends Server wit
           }
         }
       }
-    }
+    )
+  }
 
     serverInstance = Http().newServerAt("localhost", 8080).bind(route)
   }
