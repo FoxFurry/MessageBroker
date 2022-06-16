@@ -1,5 +1,5 @@
-import Server.ServerHttp
-import TopicProxy.{ProxyAction, TopicProxy}
+import server.ServerHttp
+import proxy.{ProxyAction, TopicProxy}
 import akka.actor.typed.ActorSystem
 
 object Main {

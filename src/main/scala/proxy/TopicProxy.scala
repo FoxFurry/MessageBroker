@@ -1,10 +1,9 @@
-package TopicProxy
+package proxy
 
-import Message.Message
-import Subscriber.{AddMessage, AddSub, Notify, Subscriber, TopicAction, TopicManager}
-import akka.actor.typed.Behavior
+import message.Message
+import subscribe.{AddMessage, AddSub, Notify, Subscriber, TopicAction, TopicManager}
+import akka.actor.typed.{ActorRef, Behavior, MailboxSelector}
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
-import akka.actor.typed.ActorRef
 
 object TopicProxy {
   val topics: scala.collection.mutable.Map[String, ActorRef[TopicAction]] = scala.collection.mutable.Map[String, ActorRef[TopicAction]]()
@@ -48,7 +47,7 @@ object TopicProxy {
     if (!topics.isDefinedAt(topic)) { // If manager is not defined for this topic
       context.log.info(s"Created ${topic} manager")
 
-      topics(topic) = context.spawn(TopicManager(), topic) // Create a new manager for this topic
+      topics(topic) = context.spawn(TopicManager(), topic, MailboxSelector.fromConfig("akka.dispatch.UnboundedStablePriorityMailbox")) // Create a new manager for this topic
     }
 
     topics(topic)

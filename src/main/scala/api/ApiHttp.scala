@@ -1,7 +1,7 @@
-package Api
+package api
 
-import Message.Message
-import Subscriber.Subscriber
+import message.Message
+import subscribe.Subscriber
 import sttp.client3._
 import sttp.model.StatusCode
 

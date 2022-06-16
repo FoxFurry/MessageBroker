@@ -1,6 +1,6 @@
-package Subscriber
+package subscribe
 
-import Message.Message
+import message.Message
 
 sealed trait TopicAction
 

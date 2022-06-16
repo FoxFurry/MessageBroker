@@ -1,21 +1,21 @@
-package Server
+package server
 
-import Api.ApiHttp
-import Message.Message
-import TopicProxy.{NewMessage, NewSub, ProxyAction}
+import api.ApiHttp
+import message.Message
+import proxy.{NewMessage, NewSub, ProxyAction}
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
-import Subscriber.Subscriber
+import subscribe.Subscriber
 import org.slf4j.Logger
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val SubscribeFormat: RootJsonFormat[SubscribeModel] = jsonFormat2(SubscribeModel)
-  implicit val MessageFormat: RootJsonFormat[MessageModel] = jsonFormat2(MessageModel)
+  implicit val MessageFormat: RootJsonFormat[MessageModel] = jsonFormat3(MessageModel)
 }
 
 class ServerHttp(logger: Logger)(implicit system: ActorSystem[ProxyAction]) extends Server with Directives with JsonSupport {

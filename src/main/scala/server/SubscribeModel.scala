@@ -1,4 +1,4 @@
-package Server
+package server
 
 case class SubscribeModel(
   var topic:String,

@@ -1,12 +1,12 @@
-package Subscriber
+package subscribe
 
-import Message.Message
+import message.Message
 
 import scala.util.{Failure, Success, Try}
 
-class Subscriber(_address: String, _topic: String, _api: Api.Api){
+class Subscriber(_address: String, _topic: String, _api: api.Api){
   private var cursor: Int = 0
-  private val api: Api.Api = _api
+  private val api: api.Api = _api
 
   val address: String = _address
   val topic: String = _topic

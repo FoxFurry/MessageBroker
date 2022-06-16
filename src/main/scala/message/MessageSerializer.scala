@@ -1,4 +1,4 @@
-package Message
+package message
 
 trait MessageSerializer {
   def serialize(msg: Message): Array[Byte]

@@ -1,4 +1,4 @@
-package Server
+package server
 
 trait Server {
   def Start(): Unit

@@ -1,7 +1,7 @@
-package TopicProxy
+package proxy
 
-import Message.Message
-import Subscriber.Subscriber
+import message.Message
+import subscribe.Subscriber
 
 sealed trait ProxyAction
 

@@ -1,4 +1,4 @@
-package Message
+package message
 
 import play.api.libs.json.{Json, OFormat}
 

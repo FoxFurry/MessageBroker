@@ -1,6 +1,6 @@
-package Subscriber
+package subscribe
 
-import Message.Message
+import message.Message
 
 import scala.util.{Failure, Random, Success}
 import scala.collection.mutable
