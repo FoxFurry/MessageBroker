@@ -1,5 +1,0 @@
-package Producer
-
-class ProducerManager {
-
-}
