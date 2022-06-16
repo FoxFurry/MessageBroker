@@ -3,7 +3,7 @@ package TopicProxy
 import Message.Message
 import Subscriber.{AddMessage, AddSub, Notify, Subscriber, TopicAction, TopicManager}
 import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem}
 
 object TopicProxy {
@@ -15,27 +15,22 @@ object TopicProxy {
         Behaviors.receive{ (_, message) =>
           message match {
             case NewSub(sub: Subscriber) =>
-              if (!topics.isDefinedAt(sub.topic)) { // If manager is not defined for this topic
-                context.log.info(s"Created ${sub.topic} manager")
-
-                topics(sub.topic) = context.spawn(TopicManager(), sub.topic) // Create a new manager for this topic
-              }
+              val targetActor = getActorForTopic(context, sub.topic)
 
               context.log.info(s"New subscriber to ${sub.topic} manager")
-              topics(sub.topic) ! AddSub(sub)                                    // Add subscriber to this topic
+
+              targetActor ! AddSub(sub)                                    // Add subscriber to this topic
 
               Behaviors.same
 
             case NewMessage(msg: Message) =>
-              if (!topics.isDefinedAt(msg.topic)) { // If manager is not defined for this topic
-                context.log.info(s"Created ${msg.topic} manager")
-
-                topics(msg.topic) = context.spawn(TopicManager(), msg.topic) // Create a new manager for this topic
-              }
+              val targetActor = getActorForTopic(context, msg.topic)
 
               context.log.info(s"Sending message to ${msg.topic} manager")
-              topics(msg.topic) ! AddMessage(msg) // Add message to the new topic
-              topics(msg.topic) ! Notify          // Instantly notify everyone from this topic
+
+              targetActor ! AddMessage(msg) // Add message to the new topic
+              targetActor ! Notify          // Instantly notify everyone from this topic
+
               Behaviors.same
 
             case NotifyAll =>
@@ -43,8 +38,19 @@ object TopicProxy {
               topics.foreach(tuple => tuple._2 ! Notify)  // Send notify to each topic
 
               Behaviors.same
+
           }
         }
     }
+  }
+
+  def getActorForTopic(context: ActorContext[ProxyAction], topic: String): ActorRef[TopicAction] = {
+    if (!topics.isDefinedAt(topic)) { // If manager is not defined for this topic
+      context.log.info(s"Created ${topic} manager")
+
+      topics(topic) = context.spawn(TopicManager(), topic) // Create a new manager for this topic
+    }
+
+    topics(topic)
   }
 }
