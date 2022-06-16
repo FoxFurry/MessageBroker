@@ -11,35 +11,39 @@ object TopicManager {
   def apply(): Behavior[TopicAction] =
     Behaviors.setup(context => new TopicManagerBehaviour(context))
 
-
   class TopicManagerBehaviour(context: ActorContext[TopicAction]) extends AbstractBehavior[TopicAction](context) {
     val topic: Int = Random.nextInt(1000)
 
-    private var topicSubscribers: Array[Subscriber] = Array()
-    private val topicQueue: mutable.Queue[Message] = mutable.Queue()
+    private var subscribers: Array[Subscriber] = Array()
+    private var messages: Array[Message] = Array()
 
     override def onMessage(message: TopicAction): Behavior[TopicAction] = {
       message match {
 
         case AddSub(sub: Subscriber) =>
-          println(s"[$topic] Received new sub: addr: ${sub.address} topic: ${sub.topic}")
-          topicSubscribers = topicSubscribers :+ sub  // Add subscriber to subscriber array
+          context.log.info(s"[$topic] Received new sub: addr: ${sub.address} topic: ${sub.topic}")
+          subscribers = subscribers :+ sub  // Add subscriber to subscriber array
 
           this
 
         case AddMessage(msg: Message) =>
-          println(s"[$topic] Received new message: data ${msg.data} topic: ${msg.topic}")
-          topicQueue.enqueue(msg)                   // Add message to the queue
+          context.log.info(s"[$topic] Received new message: data ${msg.data} topic: ${msg.topic}")
+          messages = messages :+ msg                  // Add message to the queue
 
           this
 
         case Notify =>
-          if (topicQueue.nonEmpty && !topicSubscribers.isEmpty) {            // If we have at least one subscriber
-            val msg = topicQueue.dequeue()          // Pop the first message
+          if (messages.nonEmpty && !subscribers.isEmpty) {            // If we have at least one subscriber
 
-            topicSubscribers.foreach(sub => sub.send(msg) match { // Send to each subscriber
-              case Success(_) => println(s"[$topic] Successfully sent to ${sub.address}")
-              case Failure(e) => println(s"[$topic] Failed sending to ${sub.address}. Reason: ${e.toString}")
+            context.log.info(s"[$topic] Sending messages to subscribers")
+
+            subscribers.foreach(sub => {
+              val currentCursor = sub.getCursor
+              if (messages.length <= currentCursor ){
+                context.log.error(s"[$topic] Subscriber has cursor at $currentCursor which exceeds message array ${messages.length}")
+              } else {
+                sub.send(messages(currentCursor))
+              }
             })
           }
 

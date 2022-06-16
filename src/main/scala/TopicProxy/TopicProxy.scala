@@ -16,30 +16,30 @@ object TopicProxy {
           message match {
             case NewSub(sub: Subscriber) =>
               if (!topics.isDefinedAt(sub.topic)) { // If manager is not defined for this topic
-                println(s"Created ${sub.topic} manager")
+                context.log.info(s"Created ${sub.topic} manager")
 
                 topics(sub.topic) = context.spawn(TopicManager(), sub.topic) // Create a new manager for this topic
               }
 
-              println(s"New subscriber to ${sub.topic} manager")
+              context.log.info(s"New subscriber to ${sub.topic} manager")
               topics(sub.topic) ! AddSub(sub)                                    // Add subscriber to this topic
 
               Behaviors.same
 
             case NewMessage(msg: Message) =>
               if (!topics.isDefinedAt(msg.topic)) { // If manager is not defined for this topic
-                println(s"Created ${msg.topic} manager")
+                context.log.info(s"Created ${msg.topic} manager")
 
                 topics(msg.topic) = context.spawn(TopicManager(), msg.topic) // Create a new manager for this topic
               }
 
-              println(s"Sending message to ${msg.topic} manager")
+              context.log.info(s"Sending message to ${msg.topic} manager")
               topics(msg.topic) ! AddMessage(msg) // Add message to the new topic
-              topics(msg.topic) ! Notify          // Instantly notify everyone
+              topics(msg.topic) ! Notify          // Instantly notify everyone from this topic
               Behaviors.same
 
             case NotifyAll =>
-              println(s"Notifying everyone")
+              context.log.info(s"Notifying everyone")
               topics.foreach(tuple => tuple._2 ! Notify)  // Send notify to each topic
 
               Behaviors.same
