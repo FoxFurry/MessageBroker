@@ -9,7 +9,7 @@ class ApiHttp extends Api {
   private val backend = HttpClientSyncBackend()
 
   def send(msg: Message, receiver: Subscriber): Unit = {
-    val request = basicRequest.body(Map("message" -> msg.data)).post(uri"${receiver.address}")
+    val request = basicRequest.body(Map("topic" -> msg.topic, "data" -> msg.data)).post(uri"${receiver.address}")
     val response = request.send(backend)
 
     if (response.code != StatusCode.Ok) {
