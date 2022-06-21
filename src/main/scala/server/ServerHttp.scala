@@ -44,7 +44,11 @@ class ServerHttp(logger: Logger)(implicit system: ActorSystem[ProxyAction]) exte
           entity(as[MessageModel]) { msg =>
             logger.info(s"Received new message for ${msg.topic}")
 
-            system ! NewMessage(new Message(topic = msg.topic, data = msg.data))
+            system ! NewMessage(Message(topic = msg.topic, data = msg.data, priority = msg.priority match {
+              case "HIGH" => 100
+              case "MEDIUM" => 200
+              case "LOW" => 300
+            }))
 
             complete(s"Received new message for topic ${msg.topic}")
           }
