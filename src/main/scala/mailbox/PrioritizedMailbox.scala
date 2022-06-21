@@ -1,28 +1,21 @@
 package mailbox
 
-import akka.actor.{ActorSystem, Kill, PoisonPill}
-import akka.dispatch.PriorityGenerator
-import akka.dispatch.UnboundedStablePriorityMailbox
-import message.Message
+import akka.actor.ActorSystem
+import akka.dispatch.{PriorityGenerator, UnboundedStablePriorityMailbox}
+import com.typesafe.config.Config
+import subscribe.{AddMessage, Notify}
 
-object PrioritizedMailbox {
-  private class PrioritizedGenerator private(val poisonPillPriority: Int, val killPriority: Int) extends PriorityGenerator {
-    override def gen(message: Any): Int = {
-      message match {
-        case Message(topic:String,data:String,priority:Int
-      ) => priority
-        case PoisonPill =>
-          poisonPillPriority
-        case kill =>
-          killPriority
-        
-
-      }
-    }
+class PrioritizedMailbox(settings: ActorSystem.Settings, config: Config) extends UnboundedStablePriorityMailbox(PriorityGenerator{
+  case action: AddMessage => {
+    println("MAILBOX MESSAGE")
+    action.msg.priority
   }
-}
-
-class PrioritizedMailbox(val settings: ActorSystem.Settings, val config: Nothing) extends UnboundedStablePriorityMailbox(new PrioritizedMailbox.PrioritizedGenerator(if (config.hasPath("priority.poison-pill")) config.getInt("priority.poison-pill")
-else PrioritizedMessage.HIGH, if (config.hasPath("priority.kill-pill")) config.getInt("priority.kill-pill")
-else PrioritizedMessage.HIGH)) {
-}
+  case _: Notify.type => {
+    println("MAILBOX NOTIFY")
+    100
+  }
+  case test => {
+    println(s"MAILBOX DEFAULT: ${test}")
+    1000
+  }
+})
