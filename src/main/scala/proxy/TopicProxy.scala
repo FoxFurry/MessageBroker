@@ -47,7 +47,7 @@ object TopicProxy {
     if (!topics.isDefinedAt(topic)) { // If manager is not defined for this topic
       context.log.info(s"Created ${topic} manager")
 
-      topics(topic) = context.spawn(TopicManager(), topic, MailboxSelector.fromConfig("akka.dispatch.UnboundedStablePriorityMailbox")) // Create a new manager for this topic
+      topics(topic) = context.spawn(TopicManager(), topic, MailboxSelector.fromConfig("akka.my-box")) // Create a new manager for this topic
     }
 
     topics(topic)
